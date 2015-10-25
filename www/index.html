@@ -39,6 +39,17 @@
             {{item.name}}
           </ion-item>
         </ion-list>
+        <div ng-hide="authData" class="card" ng-click="login()">
+          <button class="item">
+            Log In with Facebook
+          </button>
+        </div>
+
+        <div class="card" ng-show="authData">
+          <div class="item item-text-wrap">
+            Hello {{authData.facebook.displayName}}!
+          </div>
+        </div>
       </ion-content>
     </ion-pane>
   </body>

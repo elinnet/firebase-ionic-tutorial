@@ -18,7 +18,7 @@ angular.module('starter', ['ionic','firebase'])
   });
 })
 
-.controller("ListCtrl",function($scope, Items){
+.controller("ListCtrl",function($scope, Items, Auth){
   $scope.items = Items;
 
   $scope.addItem = function(){
@@ -30,9 +30,36 @@ angular.module('starter', ['ionic','firebase'])
       });
     }
   };
+
+  $scope.login = function() {
+    Auth.$authWithOAuthRedirect("facebook").then(function(authData) {
+      console.log("inside login");
+
+      // User successfully logged in
+    }).catch(function(error) {
+      if (error.code === "TRANSPORT_UNAVAILABLE") {
+        Auth.$authWithOAuthPopup("facebook").then(function(authData) {
+          // User successfully logged in. We can log to the console
+          // since we’re using a popup here
+          console.log(authData);
+        });
+      } else {
+        // Another error occurred
+        console.log(error);
+      }
+    });
+  };
+
+
 })
 
 .factory("Items", function($firebaseArray){
   var itemsRef = new Firebase("https://incandescent-inferno-5080.firebaseio.com/items");
   return $firebaseArray(itemsRef);
+})
+
+
+.factory("Auth", function($firebaseAuth) {
+  var usersRef = new Firebase("https//incandescent-inferno-5080.firebaseio.com/users");
+  return $firebaseAuth(usersRef);
 });
