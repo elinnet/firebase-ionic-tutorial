@@ -34,7 +34,6 @@ angular.module('starter', ['ionic','firebase'])
   $scope.login = function() {
     Auth.$authWithOAuthRedirect("facebook").then(function(authData) {
       console.log("inside login");
-
       // User successfully logged in
     }).catch(function(error) {
       if (error.code === "TRANSPORT_UNAVAILABLE") {
@@ -48,8 +47,16 @@ angular.module('starter', ['ionic','firebase'])
         console.log(error);
       }
     });
-  };
 
+    Auth.$onAuth(function(authData) {
+      if (authData === null) {
+        console.log("Not logged in yet");
+      } else {
+        console.log("Logged in as", authData.uid);
+      }
+      $scope.authData = authData; // This will display the user's name in our view
+    });
+  };
 
 })
 
@@ -60,6 +67,7 @@ angular.module('starter', ['ionic','firebase'])
 
 
 .factory("Auth", function($firebaseAuth) {
-  var usersRef = new Firebase("https//incandescent-inferno-5080.firebaseio.com/users");
+  var endPoint = "https://incandescent-inferno-5080.firebaseio.com";
+  var usersRef = new Firebase(endPoint);
   return $firebaseAuth(usersRef);
 });
